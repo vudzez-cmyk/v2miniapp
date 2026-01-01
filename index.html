@@ -1,211 +1,288 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>STANDOFF GOLD TAP</title>
 
 <style>
-/* ===== RESET ===== */
+:root {
+  --gold: #ffb400;
+  --gold-soft: rgba(255,180,60,.35);
+  --bg: radial-gradient(circle at top, #1b1406, #000);
+}
+
 * {
   box-sizing: border-box;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+}
+
+body {
   margin: 0;
-  padding: 0;
-}
-
-html, body {
-  height: 100%;
-  background: #0a0a0a;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-  color: #fff;
-  overflow: hidden;
-}
-
-/* ===== LOADER ===== */
-#loader {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-#loader span {
-  margin-top: 10px;
-  opacity: .7;
-}
-
-/* ===== APP ===== */
-#app {
-  display: none;
-  height: 100%;
-  padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+  background: var(--bg);
+  color: #f5e6b0;
 }
 
 /* ===== HEADER ===== */
 header {
+  padding: 14px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
 }
 
-/* ===== SCREENS ===== */
-.screen {
-  display: none;
-}
-.screen.active {
-  display: block;
-}
-
-/* ===== EARN ===== */
-#circle {
-  width: 220px;
-  height: 220px;
-  margin: 40px auto 16px;
-  border-radius: 50%;
-  background: #ffb300;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  font-weight: 700;
-  color: #000;
-  cursor: pointer;
+.lang-btn {
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  background: transparent;
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 12px;
 }
 
-.center {
+/* ===== MAIN ===== */
+main {
+  padding: 16px;
   text-align: center;
 }
 
-/* ===== BOOSTS ===== */
+h1 {
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+
+/* ===== GOLD CIRCLE ===== */
+#circle {
+  width: 240px;
+  height: 240px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffe9a8, var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 28px;
+  color: #3b2a00;
+  animation: goldPulse 3s ease-in-out infinite;
+}
+
+#circle.tap {
+  animation: tapFeedback .15s ease;
+}
+
+/* ===== STATS ===== */
+.stats {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.energy {
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: .9;
+}
+
+/* ===== BOOSTS PANEL ===== */
+#boosts {
+  display: none;
+  margin-top: 20px;
+  text-align: left;
+}
+
 .boost {
-  padding: 14px;
-  border: 1px solid #444;
-  border-radius: 12px;
+  border: 1px solid rgba(255,180,60,.35);
+  border-radius: 16px;
+  padding: 12px 14px;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
-/* ===== NAV ===== */
+.boost button {
+  background: var(--gold);
+  border: none;
+  border-radius: 14px;
+  padding: 6px 12px;
+  font-weight: 600;
+}
+
+/* ===== MENU ===== */
 nav {
   position: fixed;
+  bottom: env(safe-area-inset-bottom);
   left: 0;
   right: 0;
-  bottom: env(safe-area-inset-bottom);
-  padding: 12px;
+  padding: 10px;
   display: flex;
-  gap: 12px;
-  background: #000;
-  z-index: 999; /* КРИТИЧНО */
+  gap: 10px;
+  background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
 }
 
 nav button {
   flex: 1;
-  padding: 14px 0;
-  border-radius: 14px;
-  border: 1px solid #555;
-  background: #111;
-  color: #fff;
-  font-size: 15px;
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,180,60,.4);
+  background: rgba(255,180,60,.08);
+  color: var(--gold);
+  font-size: 14px;
 }
 
 nav button.active {
-  background: #ffb300;
-  color: #000;
+  background: var(--gold);
+  color: #3b2a00;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes goldPulse {
+  0% {
+    box-shadow: 0 0 25px var(--gold-soft), 0 0 80px rgba(255,160,0,.25);
+  }
+  50% {
+    box-shadow: 0 0 55px rgba(255,220,120,.8), 0 0 140px rgba(255,160,0,.45);
+  }
+  100% {
+    box-shadow: 0 0 25px var(--gold-soft), 0 0 80px rgba(255,160,0,.25);
+  }
+}
+
+@keyframes tapFeedback {
+  0% { transform: scale(1); }
+  50% { transform: scale(.94); }
+  100% { transform: scale(1); }
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOADER -->
-<div id="loader">
-  <div>Loading</div>
-  <span id="pct">0%</span>
-</div>
-
-<!-- APP -->
-<div id="app">
-
 <header>
   <div>STANDOFF GOLD TAP</div>
-  <button id="lang">EN</button>
+  <button class="lang-btn" id="langBtn">EN</button>
 </header>
 
-<!-- EARN -->
-<div id="earn" class="screen active">
+<main>
+  <h1 id="title">STANDOFF GOLD TAP</h1>
+
   <div id="circle">GOLD</div>
-  <div class="center">
+
+  <div class="stats">
     <div id="gold">0 GOLD</div>
-    <div>⚡ 6500 | +1 / 3 sec</div>
+    <div class="energy" id="energy">⚡ 1000 / 1000 · +1 / 3 сек</div>
   </div>
-</div>
 
-<!-- BOOSTS -->
-<div id="boosts" class="screen">
-  <div class="boost">⚡ Energy +1000 <b>500</b></div>
-  <div class="boost">⚡ Tap x2 <b>2000</b></div>
-  <div class="boost">🤖 Auto Tap <b>3000</b></div>
-</div>
+  <!-- BOOSTS (СКРЫТЫ) -->
+  <div id="boosts">
+    <h3>BOOSTS</h3>
 
-<!-- AIRDROP -->
-<div id="airdrop" class="screen center">
-  <h2>AirDrop</h2>
-  <p>01.02.2026</p>
-  <p>10 000 GOLD = 1000 GAME CURRENCY</p>
-</div>
+    <div class="boost">
+      <span>⚡ Energy +1000</span>
+      <button onclick="buyBoost('energy',500)">500</button>
+    </div>
 
-</div>
+    <div class="boost">
+      <span>⚡ Tap x2</span>
+      <button onclick="buyBoost('x2',2000)">2000</button>
+    </div>
 
-<!-- NAV -->
+    <div class="boost">
+      <span>🤖 Auto Tap</span>
+      <button onclick="buyBoost('auto',3000)">3000</button>
+    </div>
+  </div>
+</main>
+
 <nav>
-  <button class="menu active" data-tab="earn">Earn</button>
-  <button class="menu" data-tab="boosts">Boosts</button>
-  <button class="menu" data-tab="airdrop">AirDrop</button>
+  <button id="earnBtn" class="active">Earn</button>
+  <button id="boostBtn">Boosts</button>
+  <button>AirDrop</button>
 </nav>
 
 <script>
-/* ===== LOADER ===== */
-let p = 0;
-const pct = document.getElementById('pct');
-const loader = document.getElementById('loader');
-const app = document.getElementById('app');
-
-const loadInt = setInterval(() => {
-  p += 20;
-  pct.textContent = p + '%';
-  if (p >= 100) {
-    clearInterval(loadInt);
-    loader.style.display = 'none';
-    app.style.display = 'block';
-  }
-}, 120);
-
-/* ===== TAPS ===== */
+/* ===== STATE ===== */
 let gold = 0;
+let energy = 1000;
+let tapsToday = 0;
+let tapPower = 1;
+let autoTap = false;
+
 const goldEl = document.getElementById('gold');
-document.getElementById('circle').onclick = () => {
-  gold++;
-  goldEl.textContent = gold + ' GOLD';
+const energyEl = document.getElementById('energy');
+const circle = document.getElementById('circle');
+const boosts = document.getElementById('boosts');
+
+const earnBtn = document.getElementById('earnBtn');
+const boostBtn = document.getElementById('boostBtn');
+
+/* ===== TAP ===== */
+circle.onclick = () => {
+  if (energy <= 0 || tapsToday >= 1000) return;
+
+  tapsToday++;
+  energy--;
+  gold += tapPower;
+
+  circle.classList.remove('tap');
+  void circle.offsetWidth;
+  circle.classList.add('tap');
+
+  updateUI();
 };
 
-/* ===== NAV LOGIC ===== */
-const screens = document.querySelectorAll('.screen');
-const buttons = document.querySelectorAll('.menu');
+/* ===== ENERGY REGEN ===== */
+setInterval(() => {
+  if (energy < 1000) energy++;
+  updateUI();
+}, 3000);
 
-buttons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    buttons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+/* ===== BOOST BUY ===== */
+function buyBoost(type, price) {
+  if (gold < price) return;
 
-    screens.forEach(s => s.classList.remove('active'));
-    document.getElementById(btn.dataset.tab).classList.add('active');
-  });
-});
+  gold -= price;
+
+  if (type === 'energy') energy += 1000;
+  if (type === 'x2') tapPower = 2;
+  if (type === 'auto' && !autoTap) {
+    autoTap = true;
+    setInterval(() => {
+      if (energy > 0) {
+        energy--;
+        gold += tapPower;
+        updateUI();
+      }
+    }, 1000);
+  }
+
+  updateUI();
+}
+
+/* ===== MENU ===== */
+earnBtn.onclick = () => {
+  boosts.style.display = 'none';
+  earnBtn.classList.add('active');
+  boostBtn.classList.remove('active');
+};
+
+boostBtn.onclick = () => {
+  boosts.style.display = 'block';
+  boostBtn.classList.add('active');
+  earnBtn.classList.remove('active');
+};
+
+/* ===== UI ===== */
+function updateUI() {
+  goldEl.textContent = `${gold} GOLD`;
+  energyEl.textContent = `⚡ ${energy} / 1000 · +1 / 3 сек`;
+}
+
+updateUI();
 </script>
 
 </body>
