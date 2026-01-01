@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>STANDOFF GOLD TAP</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="loading">
+
+<div id="loader">
+  <div class="loader-text">Loading</div>
+  <div class="loader-percent" id="loaderPercent">0%</div>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <span class="title">STANDOFF GOLD TAP</span>
+    <button id="langBtn">EN</button>
+  </header>
+
+  <main>
+    <div id="circle" class="gold-circle">GOLD</div>
+
+    <div class="stats">
+      <div id="goldText">0 GOLD</div>
+      <div class="energy">⚡ <span id="energyText">6500</span></div>
+      <div id="passiveText">+1 GOLD / 3 sec</div>
+    </div>
+
+    <section id="boosts">
+      <h2 id="boostsTitle">BOOSTS</h2>
+      <button class="boost" data-type="energy">⚡ Energy +1000 <span>500 GOLD</span></button>
+      <button class="boost" data-type="x2">⚡ Tap x2 <span>2000 GOLD</span></button>
+      <button class="boost" data-type="auto">🤖 Auto Tap <span>3000 GOLD</span></button>
+    </section>
+  </main>
+
+  <nav>
+    <button class="nav active">Earn</button>
+    <button class="nav">Boosts</button>
+    <button class="nav">Air Drop</button>
+  </nav>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
