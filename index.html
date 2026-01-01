@@ -1,48 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>STANDOFF GOLD TAP</title>
-<link rel="stylesheet" href="style.css">
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  font-family:Arial,sans-serif
+}
+body{
+  margin:0;
+  background:radial-gradient(circle at top,#1a1406,#000);
+  color:#f5d27a;
+  overflow:hidden;
+}
+
+/* ===== LOADER ===== */
+#loader{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+#loader h1{margin:0;font-size:28px}
+#loader span{margin-top:10px;font-size:18px}
+
+/* ===== APP ===== */
+#app{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+header{
+  display:flex;
+  justify-content:space-between;
+  padding:16px;
+}
+header span{font-weight:800}
+header button{
+  background:transparent;
+  border:1px solid #f5d27a;
+  color:#f5d27a;
+  border-radius:12px;
+  padding:6px 14px;
+}
+
+/* ===== SCREENS ===== */
+.screen{
+  flex:1;
+  display:none;
+  overflow-y:auto;
+  padding-bottom:110px;
+}
+.screen.active{display:block}
+
+/* ===== TAP CIRCLE ===== */
+#circle{
+  margin:40px auto 20px;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle,#ffe08a,#ffb300);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:bold;
+  cursor:pointer;
+  position:relative;
+  box-shadow:0 0 60px rgba(255,180,60,.6);
+  overflow:hidden;
+}
+#circle::before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:radial-gradient(
+    circle at var(--x,50%) var(--y,50%),
+    rgba(255,255,255,.5),
+    rgba(255,180,60,.3),
+    transparent 65%
+  );
+  filter:blur(30px);
+  opacity:0;
+  transition:.15s;
+}
+#circle.active::before{opacity:1}
+
+/* ===== INFO ===== */
+.info{text-align:center}
+.info div{margin:4px 0}
+
+/* ===== BOOSTS ===== */
+.boost{
+  width:90%;
+  margin:12px auto;
+  padding:14px;
+  background:linear-gradient(180deg,#2a1c08,#120b03);
+  border:1px solid #f5d27a;
+  border-radius:16px;
+  display:flex;
+  justify-content:space-between;
+}
+
+/* ===== NAV ===== */
+nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:env(safe-area-inset-bottom,0);
+  display:flex;
+  gap:10px;
+  padding:12px;
+  background:#000;
+  z-index:1000;
+}
+nav button{
+  flex:1;
+  padding:14px;
+  border-radius:18px;
+  border:1px solid #444;
+  background:#111;
+  color:#aaa;
+}
+nav button.active{
+  border-color:#f5d27a;
+  color:#f5d27a;
+  box-shadow:0 0 15px rgba(255,200,80,.6);
+}
+</style>
 </head>
-<body class="loading">
 
+<body>
+
+<!-- LOADER -->
 <div id="loader">
-  <div class="loader-text">Loading</div>
-  <div class="loader-percent" id="loaderPercent">0%</div>
+  <h1>Loading</h1>
+  <span id="loadPercent">0%</span>
 </div>
 
-<div id="app" class="hidden">
-  <header>
-    <span class="title">STANDOFF GOLD TAP</span>
-    <button id="langBtn">EN</button>
-  </header>
+<!-- APP -->
+<div id="app" style="display:none">
 
-  <main>
-    <div id="circle" class="gold-circle">GOLD</div>
+<header>
+  <span>STANDOFF GOLD TAP</span>
+  <button id="langBtn">EN</button>
+</header>
 
-    <div class="stats">
-      <div id="goldText">0 GOLD</div>
-      <div class="energy">⚡ <span id="energyText">6500</span></div>
-      <div id="passiveText">+1 GOLD / 3 sec</div>
-    </div>
-
-    <section id="boosts">
-      <h2 id="boostsTitle">BOOSTS</h2>
-      <button class="boost" data-type="energy">⚡ Energy +1000 <span>500 GOLD</span></button>
-      <button class="boost" data-type="x2">⚡ Tap x2 <span>2000 GOLD</span></button>
-      <button class="boost" data-type="auto">🤖 Auto Tap <span>3000 GOLD</span></button>
-    </section>
-  </main>
-
-  <nav>
-    <button class="nav active">Earn</button>
-    <button class="nav">Boosts</button>
-    <button class="nav">Air Drop</button>
-  </nav>
+<div class="screen active" data-screen="earn">
+  <div id="circle">GOLD</div>
+  <div class="info">
+    <div id="goldText">0 GOLD</div>
+    <div>⚡ <span id="energyText">6500</span></div>
+    <div id="passiveText">+1 GOLD / 3 sec</div>
+  </div>
 </div>
 
-<script src="app.js"></script>
+<div class="screen" data-screen="boosts">
+  <div class="boost" data-type="energy">⚡ Energy +1000 <span>500</span></div>
+  <div class="boost" data-type="x2">⚡ Tap x2 <span>2000</span></div>
+  <div class="boost" data-type="auto">🤖 Auto Tap <span>3000</span></div>
+</div>
+
+<div class="screen" data-screen="airdrop">
+  <h2 style="text-align:center">AIR DROP</h2>
+  <p style="text-align:center">01.02.2026</p>
+  <p style="text-align:center">10 000 GOLD = 1 000 GAME COINS</p>
+</div>
+
+<nav>
+  <button class="nav active" data-nav="earn">Earn</button>
+  <button class="nav" data-nav="boosts">Boosts</button>
+  <button class="nav" data-nav="airdrop">Air Drop</button>
+</nav>
+
+</div>
+
+<script>
+/* ===== LOADER ===== */
+let p=0;
+const loader=document.getElementById('loader');
+const percent=document.getElementById('loadPercent');
+const app=document.getElementById('app');
+
+const loadInt=setInterval(()=>{
+  p+=Math.floor(Math.random()*6)+4;
+  if(p>=100){
+    p=100;
+    clearInterval(loadInt);
+    loader.style.display='none';
+    app.style='flex';
+  }
+  percent.textContent=p+'%';
+},80);
+
+/* ===== GAME ===== */
+let gold=0,energy=6500,tapPower=1,autoTap=false,lang='EN',lastTap=0;
+
+const goldText=document.getElementById('goldText');
+const energyText=document.getElementById('energyText');
+const passiveText=document.getElementById('passiveText');
+const circle=document.getElementById('circle');
+
+function update(){
+  goldText.textContent=gold+' GOLD';
+  energyText.textContent=energy;
+}
+
+circle.onclick=e=>{
+  const now=Date.now();
+  if(now-lastTap<60||energy<=0)return;
+  lastTap=now;
+  energy--; gold+=tapPower; update();
+
+  const r=circle.getBoundingClientRect();
+  circle.style.setProperty('--x',(e.clientX-r.left)+'px');
+  circle.style.setProperty('--y',(e.clientY-r.top)+'px');
+  circle.classList.add('active');
+  setTimeout(()=>circle.classList.remove('active'),150);
+};
+
+/* AUTO TAP */
+setInterval(()=>{
+  if(autoTap){
+    gold++; update();
+  }
+},1000);
+
+/* BOOSTS */
+document.querySelectorAll('.boost').forEach(b=>{
+  b.onclick=()=>{
+    const t=b.dataset.type;
+    if(t==='energy'&&gold>=500){energy+=1000;gold-=500}
+    if(t==='x2'&&gold>=2000){tapPower=2;gold-=2000}
+    if(t==='auto'&&gold>=3000){autoTap=true;gold-=3000}
+    update();
+  }
+});
+
+/* NAV */
+document.querySelectorAll('.nav').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.nav').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.querySelector(`[data-screen="${btn.dataset.nav}"]`).classList.add('active');
+  }
+});
+
+/* LANG */
+document.getElementById('langBtn').onclick=()=>{
+  lang=lang==='EN'?'RU':'EN';
+  passiveText.textContent=lang==='EN'?'+1 GOLD / 3 sec':'+1 ЗОЛОТО / 3 сек';
+  document.getElementById('langBtn').textContent=lang;
+};
+</script>
+
 </body>
-</html>
+</html>.display
