@@ -1,0 +1,147 @@
+:root {
+  --gold: #ffb400;
+  --gold-soft: rgba(255,180,60,.35);
+  --bg: radial-gradient(circle at top, #1b1406, #000);
+}
+
+* {
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #f5e6b0;
+}
+
+/* HEADER */
+header {
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lang-btn {
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  background: transparent;
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+/* MAIN */
+main {
+  padding: 16px;
+  text-align: center;
+}
+
+/* GOLD CIRCLE */
+#circle {
+  width: 240px;
+  height: 240px;
+  margin: 20px auto 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffe9a8, var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 28px;
+  color: #3b2a00;
+  animation: goldPulse 3s ease-in-out infinite;
+}
+
+#circle.tap {
+  animation: tapFeedback .15s ease;
+}
+
+/* STATS */
+.stats {
+  font-size: 14px;
+}
+
+#energy {
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: .9;
+}
+
+/* BOOSTS */
+#boosts {
+  display: none;
+  margin-top: 20px;
+  text-align: left;
+}
+
+#boosts h3 {
+  margin-bottom: 10px;
+}
+
+.boost {
+  border: 1px solid rgba(255,180,60,.35);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.boost button {
+  background: var(--gold);
+  border: none;
+  border-radius: 14px;
+  padding: 6px 12px;
+  font-weight: 600;
+}
+
+/* MENU */
+nav {
+  position: fixed;
+  bottom: env(safe-area-inset-bottom);
+  left: 0;
+  right: 0;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
+}
+
+nav button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,180,60,.4);
+  background: rgba(255,180,60,.08);
+  color: var(--gold);
+  font-size: 14px;
+}
+
+nav button.active {
+  background: var(--gold);
+  color: #3b2a00;
+}
+
+/* ANIMATIONS */
+@keyframes goldPulse {
+  0% {
+    box-shadow: 0 0 25px var(--gold-soft), 0 0 80px rgba(255,160,0,.25);
+  }
+  50% {
+    box-shadow: 0 0 55px rgba(255,220,120,.8), 0 0 140px rgba(255,160,0,.45);
+  }
+  100% {
+    box-shadow: 0 0 25px var(--gold-soft), 0 0 80px rgba(255,160,0,.25);
+  }
+}
+
+@keyframes tapFeedback {
+  0% { transform: scale(1); }
+  50% { transform: scale(.94); }
+  100% { transform: scale(1); }
+}
