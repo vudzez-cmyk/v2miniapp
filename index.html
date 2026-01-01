@@ -1,194 +1,224 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>STANDOFF GOLD TAP</title>
 
 <style>
-/* ===== RESET ===== */
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-  font-family:Arial,sans-serif;
+/* ================= BASE ================= */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
 }
-body{
-  margin:0;
-  overflow:hidden;
-  color:#f5d27a;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   background:
-    radial-gradient(circle at top,#241707,#000 70%),
-    repeating-radial-gradient(circle at center,
-      rgba(255,255,255,.02) 0,
-      rgba(255,255,255,.02) 1px,
-      transparent 1px,
-      transparent 6px);
+    radial-gradient(1200px 800px at 50% -200px, rgba(255,180,60,0.18), transparent 60%),
+    linear-gradient(180deg, #050505 0%, #0b0702 100%);
+  color: #f5d98b;
+  overflow: hidden;
 }
 
-/* ===== LOADER ===== */
-#loader{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-#loader h1{margin:0;font-size:28px}
-#loader span{margin-top:10px;font-size:18px}
-
-/* ===== APP ===== */
-#app{
-  height:100vh;
-  display:none;
-  flex-direction:column;
+/* grain */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  opacity: .25;
 }
 
-/* ===== HEADER ===== */
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px;
-}
-header .title{
-  font-weight:800;
-  letter-spacing:.08em;
-}
-header button{
-  background:rgba(255,215,120,.08);
-  border:1px solid rgba(255,215,120,.6);
-  color:#ffd777;
-  border-radius:12px;
-  padding:6px 14px;
+/* ================= LOADER ================= */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #0b0702, #000);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
 }
 
-/* ===== SCREENS ===== */
-.screen{
-  flex:1;
-  display:none;
-  overflow-y:auto;
-  padding-bottom:120px;
+#loader h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: 2px;
 }
-.screen.active{display:block}
 
-/* ===== TAP CIRCLE ===== */
-#circle{
-  margin:40px auto 20px;
-  width:220px;
-  height:220px;
-  border-radius:50%;
+#loader span {
+  margin-top: 12px;
+  font-size: 18px;
+  opacity: .85;
+}
+
+/* ================= APP ================= */
+#app {
+  display: none;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* header */
+header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h2 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+#langBtn {
+  padding: 6px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,200,80,.35);
+  background: rgba(255,200,80,.08);
+  color: #f5d98b;
+  font-weight: 600;
+}
+
+/* ================= CIRCLE ================= */
+#circleWrap {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#circle {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
   background:
-    radial-gradient(circle at 30% 30%, #fff2c2, #ffb300 65%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:26px;
-  font-weight:900;
-  letter-spacing:.12em;
-  color:#3b2300;
-  text-shadow:
-    0 2px 6px rgba(255,255,255,.5),
-    0 0 12px rgba(255,200,60,.8);
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  animation:pulse 2.8s infinite;
+    radial-gradient(circle at 30% 30%, #ffe7a3, #ffb400 60%, #d48c00 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: 800;
+  color: #1a1205;
+  position: relative;
+  box-shadow:
+    0 0 40px rgba(255,180,60,.35),
+    0 0 120px rgba(255,140,0,.25);
+  animation: idlePulse 3.5s ease-in-out infinite;
+  user-select: none;
 }
 
 /* pulse */
-@keyframes pulse{
-  0%{box-shadow:0 0 25px rgba(255,180,60,.35)}
-  50%{box-shadow:0 0 70px rgba(255,200,80,.85)}
-  100%{box-shadow:0 0 25px rgba(255,180,60,.35)}
+@keyframes idlePulse {
+  0% { box-shadow: 0 0 40px rgba(255,180,60,.35), 0 0 120px rgba(255,140,0,.25); }
+  50% { box-shadow: 0 0 60px rgba(255,200,90,.55), 0 0 160px rgba(255,160,0,.35); }
+  100% { box-shadow: 0 0 40px rgba(255,180,60,.35), 0 0 120px rgba(255,140,0,.25); }
 }
 
-/* liquid circle */
-#circle::before{
-  content:"";
-  position:absolute;
-  inset:-45%;
-  background:radial-gradient(
-    circle at var(--x,50%) var(--y,50%),
-    rgba(255,255,255,.55),
-    rgba(255,180,60,.35),
-    transparent 65%);
-  filter:blur(28px);
-  opacity:0;
-  transition:.15s;
+/* dynamic light */
+#circle::before {
+  content: '';
+  position: absolute;
+  inset: -25px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,200,80,.45), transparent 60%);
+  opacity: 0;
+  transition: opacity .15s;
 }
-#circle.active::before{opacity:1}
 
-/* ===== INFO ===== */
-.info{text-align:center}
-.info div{margin:4px 0}
+#circle:active::before {
+  opacity: 1;
+}
 
-/* ===== BOOSTS ===== */
-.boost{
-  width:90%;
-  margin:12px auto;
-  padding:14px;
-  background:linear-gradient(180deg,#2a1c08,#120b03);
-  border:1px solid rgba(255,215,120,.6);
-  border-radius:16px;
-  display:flex;
-  justify-content:space-between;
-  position:relative;
-  overflow:hidden;
+#goldCount {
+  margin-top: 16px;
+  font-size: 20px;
+  font-weight: 700;
 }
-.boost::before{
-  content:"";
-  position:absolute;
-  inset:-40%;
-  background:radial-gradient(circle at var(--bx,50%) var(--by,50%),
-    rgba(255,215,120,.45),
-    transparent 60%);
-  filter:blur(22px);
-  opacity:0;
-  transition:.15s;
-}
-.boost.active::before{opacity:1}
 
-/* ===== NAV ===== */
-nav{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:env(safe-area-inset-bottom,0);
-  display:flex;
-  gap:10px;
-  padding:12px;
-  background:rgba(0,0,0,.85);
-  z-index:1000;
+#energy {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: .9;
 }
-nav button{
-  flex:1;
-  padding:14px;
-  border-radius:18px;
-  border:1px solid rgba(255,215,120,.35);
-  background:rgba(255,180,40,.06);
-  color:#aaa;
-  position:relative;
-  overflow:hidden;
+
+/* ================= BOOSTS ================= */
+#boosts {
+  width: 100%;
+  margin-top: 28px;
 }
-nav button::before{
-  content:"";
-  position:absolute;
-  inset:-40%;
-  background:radial-gradient(circle at var(--nx,50%) var(--ny,50%),
-    rgba(255,215,120,.45),
-    transparent 60%);
-  filter:blur(22px);
-  opacity:0;
-  transition:.15s;
+
+#boosts h3 {
+  margin: 0 0 12px;
 }
-nav button.active{
-  color:#ffd777;
-  box-shadow:0 0 18px rgba(255,200,80,.7);
+
+.boost {
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,200,80,.25);
+  background: rgba(255,200,80,.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
 }
-nav button.active::before{opacity:1}
+
+.boost::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,200,80,.35), transparent 60%);
+  opacity: 0;
+  transition: opacity .15s;
+}
+
+.boost:active::before {
+  opacity: 1;
+}
+
+/* ================= NAV ================= */
+nav {
+  position: fixed;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+nav button {
+  min-width: 100px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,200,80,.35);
+  background: rgba(255,200,80,.08);
+  color: #f5d98b;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+nav button.active {
+  box-shadow: 0 0 18px rgba(255,200,80,.45);
+}
+
+/* ================= UTIL ================= */
+.hidden { display: none; }
 </style>
 </head>
 
@@ -196,186 +226,114 @@ nav button.active::before{opacity:1}
 
 <!-- LOADER -->
 <div id="loader">
-  <h1>Loading</h1>
+  <h1>LOADING</h1>
   <span id="loadPercent">0%</span>
 </div>
 
 <!-- APP -->
 <div id="app">
+  <header>
+    <h2 id="title">STANDOFF GOLD TAP</h2>
+    <button id="langBtn">EN</button>
+  </header>
 
-<header>
-  <span class="title" data-i18n="title">STANDOFF GOLD TAP</span>
-  <button id="langBtn">EN</button>
-<header>
+  <div id="circleWrap">
+    <div id="circle">GOLD</div>
+    <div id="goldCount">0 GOLD</div>
+    <div id="energy">⚡ 6500 | +1 / 3 sec</div>
+  </div>
 
-<div class="screen active" data-screen="earn">
-  <div id="circle">GOLD</div>
-  <div class="info">
-    <div id="goldText">0 GOLD</div>
-    <div data-i18n="energy">⚡ Energy: <span id="energyText">6500</span></div>
-    <div data-i18n="passive">+1 GOLD / 3 sec</div>
+  <div id="boosts">
+    <h3 id="boostTitle">BOOSTS</h3>
+    <div class="boost" data-boost="energy">⚡ Energy +1000 <span>500</span></div>
+    <div class="boost" data-boost="x2">⚡ Tap x2 <span>2000</span></div>
+    <div class="boost" data-boost="auto">🤖 Auto Tap <span>3000</span></div>
   </div>
 </div>
 
-<div class="screen" data-screen="boosts">
-  <div class="boost" data-type="energy" data-i18n="boost_energy">⚡ Energy +1000 <span>500</span></div>
-  <div class="boost" data-type="x2" data-i18n="boost_x2">⚡ Tap x2 <span>2000</span></div>
-  <div class="boost" data-type="auto" data-i18n="boost_auto">🤖 Auto Tap <span>3000</span></div>
-</div>
-
-<div class="screen" data-screen="airdrop">
-  <h2 style="text-align:center" data-i18n="airdrop">AIR DROP</h2>
-  <p style="text-align:center" data-i18n="airdrop_date">01.02.2026</p>
-  <p style="text-align:center" data-i18n="airdrop_rate">10 000 GOLD = 1 000 GAME COINS</p>
-</div>
-
 <nav>
-  <button class="nav active" data-nav="earn" data-i18n="nav_earn">Earn</button>
-  <button class="nav" data-nav="boosts" data-i18n="nav_boosts">Boosts</button>
-  <button class="nav" data-nav="airdrop" data-i18n="nav_airdrop">Air Drop</button>
+  <button class="active">Earn</button>
+  <button>Boosts</button>
+  <button>AirDrop</button>
 </nav>
 
-</div>
-
 <script>
-/* ===== I18N ===== */
-const dict={
-  EN:{
-    title:"STANDOFF GOLD TAP",
-    energy:"⚡ Energy:",
-    passive:"+1 GOLD / 3 sec",
-    boost_energy:"⚡ Energy +1000",
-    boost_x2:"⚡ Tap x2",
-    boost_auto:"🤖 Auto Tap",
-    airdrop:"AIR DROP",
-    airdrop_date:"01.02.2026",
-    airdrop_rate:"10 000 GOLD = 1 000 GAME COINS",
-    nav_earn:"Earn",
-    nav_boosts:"Boosts",
-    nav_airdrop:"Air Drop"
-  },
-  RU:{
-    title:"STANDOFF GOLD TAP",
-    energy:"⚡ Энергия:",
-    passive:"+1 ЗОЛОТО / 3 сек",
-    boost_energy:"⚡ Энергия +1000",
-    boost_x2:"⚡ Тап x2",
-    boost_auto:"🤖 Авто тап",
-    airdrop:"АИРДРОП",
-    airdrop_date:"01.02.2026",
-    airdrop_rate:"10 000 ЗОЛОТА = 1 000 ИГРОВОЙ ВАЛЮТЫ",
-    nav_earn:"Заработок",
-    nav_boosts:"Бусты",
-    nav_airdrop:"Аирдроп"
-  }
-};
+/* ================= LOADER ================= */
+let p = 0;
+const percent = document.getElementById('loadPercent');
+const loader = document.getElementById('loader');
+const app = document.getElementById('app');
 
-let lang="EN";
-
-/* apply language */
-function applyLang(){
-  document.querySelectorAll("[data-i18n]").forEach(el=>{
-    el.textContent=dict[lang][el.dataset.i18n];
-  });
-  document.getElementById("langBtn").textContent=lang;
-}
-
-/* ===== LOADER ===== */
-let p=0;
-const loader=document.getElementById("loader");
-const percent=document.getElementById("loadPercent");
-const app=document.getElementById("app");
-
-const loadInt=setInterval(()=>{
-  p+=Math.floor(Math.random()*6)+4;
-  if(p>=100){
-    p=100;
+const loadInt = setInterval(() => {
+  p += Math.random() * 12;
+  if (p >= 100) {
+    p = 100;
     clearInterval(loadInt);
-    loader.style.display="none";
-    app.style.display="flex";
+    loader.style.display = 'none';
+    app.style.display = 'flex';
   }
-  percent.textContent=p+"%";
-},80);
+  percent.textContent = Math.floor(p) + '%';
+}, 120);
 
-/* ===== GAME ===== */
-let gold=0,energy=6500,tapPower=1,autoTap=false,lastTap=0;
+/* ================= GAME ================= */
+let gold = 0;
+let tapPower = 1;
+let autoTap = false;
 
-const goldText=document.getElementById("goldText");
-const energyText=document.getElementById("energyText");
-const circle=document.getElementById("circle");
+const goldEl = document.getElementById('goldCount');
+const circle = document.getElementById('circle');
 
-function update(){
-  goldText.textContent=gold+" GOLD";
-  energyText.textContent=energy;
-}
-
-circle.addEventListener("click",e=>{
-  const now=Date.now();
-  if(now-lastTap<60||energy<=0)return;
-  lastTap=now;
-  energy--; gold+=tapPower; update();
-
-  const r=circle.getBoundingClientRect();
-  circle.style.setProperty("--x",(e.clientX-r.left)+"px");
-  circle.style.setProperty("--y",(e.clientY-r.top)+"px");
-  circle.classList.add("active");
-  setTimeout(()=>circle.classList.remove("active"),150);
+circle.addEventListener('click', () => {
+  gold += tapPower;
+  goldEl.textContent = gold + ' GOLD';
 });
 
 /* auto tap */
-setInterval(()=>{
-  if(autoTap){
-    gold++; update();
+setInterval(() => {
+  if (autoTap) {
+    gold += tapPower;
+    goldEl.textContent = gold + ' GOLD';
   }
-},1000);
+}, 1000);
 
-/* boosts liquid + logic */
-document.querySelectorAll(".boost").forEach(b=>{
-  b.addEventListener("pointerdown",e=>{
-    const r=b.getBoundingClientRect();
-    b.style.setProperty("--bx",(e.clientX-r.left)+"px");
-    b.style.setProperty("--by",(e.clientY-r.top)+"px");
-    b.classList.add("active");
-  });
-  b.addEventListener("pointerup",()=>b.classList.remove("active"));
-
-  b.addEventListener("click",()=>{
-    const t=b.dataset.type;
-    if(t==="energy"&&gold>=500){energy+=1000;gold-=500}
-    if(t==="x2"&&gold>=2000){tapPower=2;gold-=2000}
-    if(t==="auto"&&gold>=3000){autoTap=true;gold-=3000}
-    update();
+/* boosts */
+document.querySelectorAll('.boost').forEach(b => {
+  b.addEventListener('click', () => {
+    const type = b.dataset.boost;
+    if (type === 'x2') tapPower = 2;
+    if (type === 'auto') autoTap = true;
   });
 });
 
-/* nav */
-document.querySelectorAll(".nav").forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll(".nav").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-    document.querySelector(`[data-screen="${btn.dataset.nav}"]`).classList.add("active");
-  };
-});
-
-/* nav liquid */
-document.querySelectorAll("nav button").forEach(btn=>{
-  btn.addEventListener("pointerdown",e=>{
-    const r=btn.getBoundingClientRect();
-    btn.style.setProperty("--nx",(e.clientX-r.left)+"px");
-    btn.style.setProperty("--ny",(e.clientY-r.top)+"px");
+/* liquid pointer */
+document.querySelectorAll('.boost, nav button, #circle').forEach(el => {
+  el.addEventListener('pointermove', e => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--x', `${e.clientX - r.left}px`);
+    el.style.setProperty('--y', `${e.clientY - r.top}px`);
   });
 });
 
-/* lang btn */
-document.getElementById("langBtn").onclick=()=>{
-  lang=lang==="EN"?"RU":"EN";
-  applyLang();
+/* ================= LANG ================= */
+let lang = 'EN';
+const dict = {
+  EN: {
+    boosts: 'BOOSTS',
+    energy: '⚡ 6500 | +1 / 3 sec'
+  },
+  RU: {
+    boosts: 'БУСТЫ',
+    energy: '⚡ 6500 | +1 / 3 сек'
+  }
 };
 
-applyLang();
-update();
+document.getElementById('langBtn').onclick = () => {
+  lang = lang === 'EN' ? 'RU' : 'EN';
+  document.getElementById('langBtn').textContent = lang;
+  document.getElementById('boostTitle').textContent = dict[lang].boosts;
+  document.getElementById('energy').textContent = dict[lang].energy;
+};
 </script>
 
 </body>
-</html>/
+</html>
