@@ -2,337 +2,222 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
 <title>STANDOFF GOLD TAP</title>
 
 <style>
-/* ================= BASE ================= */
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:radial-gradient(circle at top,#2a1c00,#000);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  color:#f5d27a;
+  height:100vh;
+  overflow:hidden;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background:
-    radial-gradient(1200px 800px at 50% -200px, rgba(255,180,60,0.18), transparent 60%),
-    linear-gradient(180deg, #050505 0%, #0b0702 100%);
-  color: #f5d98b;
-  overflow: hidden;
+.hidden{display:none}
+
+#loader{
+  position:fixed;inset:0;
+  background:#000;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+}
+#loader h1{font-size:28px;margin-bottom:10px}
+#loader span{font-size:18px;color:#ffcc55}
+
+header{
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.lang-btn{
+  border:1px solid #ffcc55;
+  background:transparent;
+  color:#ffcc55;
+  padding:6px 14px;
+  border-radius:20px;
 }
 
-/* grain */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
-  opacity: .25;
+main{
+  text-align:center;
+  padding-top:10px;
 }
 
-/* ================= LOADER ================= */
-#loader {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, #0b0702, #000);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
+#circle{
+  width:260px;height:260px;
+  margin:20px auto;
+  border-radius:50%;
+  background:radial-gradient(circle,#ffd36a,#ffb300);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:36px;
+  font-weight:700;
+  color:#000;
+  box-shadow:0 0 60px rgba(255,200,80,.7);
+  animation:pulse 3s infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 40px rgba(255,200,80,.5)}
+  50%{box-shadow:0 0 90px rgba(255,200,80,1)}
+  100%{box-shadow:0 0 40px rgba(255,200,80,.5)}
 }
 
-#loader h1 {
-  margin: 0;
-  font-size: 28px;
-  letter-spacing: 2px;
+#goldCount{font-size:22px;margin-top:6px}
+#energy{margin-top:10px;font-size:16px}
+
+.progress{
+  width:80%;
+  height:6px;
+  background:#3a2a00;
+  margin:10px auto;
+  border-radius:10px;
+}
+.progress div{
+  height:100%;
+  background:#ffb300;
+  width:100%;
+  border-radius:10px;
 }
 
-#loader span {
-  margin-top: 12px;
-  font-size: 18px;
-  opacity: .85;
-}
+section{display:none;padding:20px}
+section.active{display:block}
 
-/* ================= APP ================= */
-#app {
-  display: none;
-  height: 100%;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.card{
+  border:1px solid #ffcc55;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition:.2s;
 }
+.card:active{box-shadow:0 0 20px #ffcc55}
 
-/* header */
-header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+nav{
+  position:fixed;
+  bottom:12px;
+  left:0;right:0;
+  display:flex;
+  justify-content:space-around;
 }
-
-header h2 {
-  margin: 0;
-  font-size: 16px;
-  letter-spacing: 1px;
+nav button{
+  background:transparent;
+  border:1px solid #ffcc55;
+  color:#ffcc55;
+  padding:10px 24px;
+  border-radius:24px;
 }
-
-#langBtn {
-  padding: 6px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,200,80,.35);
-  background: rgba(255,200,80,.08);
-  color: #f5d98b;
-  font-weight: 600;
+nav button.active{
+  background:#ffcc55;
+  color:#000;
 }
-
-/* ================= CIRCLE ================= */
-#circleWrap {
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#circle {
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 30%, #ffe7a3, #ffb400 60%, #d48c00 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 34px;
-  font-weight: 800;
-  color: #1a1205;
-  position: relative;
-  box-shadow:
-    0 0 40px rgba(255,180,60,.35),
-    0 0 120px rgba(255,140,0,.25);
-  animation: idlePulse 3.5s ease-in-out infinite;
-  user-select: none;
-}
-
-/* pulse */
-@keyframes idlePulse {
-  0% { box-shadow: 0 0 40px rgba(255,180,60,.35), 0 0 120px rgba(255,140,0,.25); }
-  50% { box-shadow: 0 0 60px rgba(255,200,90,.55), 0 0 160px rgba(255,160,0,.35); }
-  100% { box-shadow: 0 0 40px rgba(255,180,60,.35), 0 0 120px rgba(255,140,0,.25); }
-}
-
-/* dynamic light */
-#circle::before {
-  content: '';
-  position: absolute;
-  inset: -25px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,200,80,.45), transparent 60%);
-  opacity: 0;
-  transition: opacity .15s;
-}
-
-#circle:active::before {
-  opacity: 1;
-}
-
-#goldCount {
-  margin-top: 16px;
-  font-size: 20px;
-  font-weight: 700;
-}
-
-#energy {
-  margin-top: 8px;
-  font-size: 14px;
-  opacity: .9;
-}
-
-/* ================= BOOSTS ================= */
-#boosts {
-  width: 100%;
-  margin-top: 28px;
-}
-
-#boosts h3 {
-  margin: 0 0 12px;
-}
-
-.boost {
-  padding: 14px;
-  margin-bottom: 10px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,200,80,.25);
-  background: rgba(255,200,80,.08);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-  position: relative;
-  overflow: hidden;
-}
-
-.boost::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at var(--x,50%) var(--y,50%), rgba(255,200,80,.35), transparent 60%);
-  opacity: 0;
-  transition: opacity .15s;
-}
-
-.boost:active::before {
-  opacity: 1;
-}
-
-/* ================= NAV ================= */
-nav {
-  position: fixed;
-  bottom: 14px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-
-nav button {
-  min-width: 100px;
-  padding: 12px 16px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,200,80,.35);
-  background: rgba(255,200,80,.08);
-  color: #f5d98b;
-  font-weight: 600;
-  position: relative;
-  overflow: hidden;
-}
-
-nav button.active {
-  box-shadow: 0 0 18px rgba(255,200,80,.45);
-}
-
-/* ================= UTIL ================= */
-.hidden { display: none; }
 </style>
 </head>
 
 <body>
 
-<!-- LOADER -->
 <div id="loader">
-  <h1>LOADING</h1>
-  <span id="loadPercent">0%</span>
+  <h1>Loading</h1>
+  <span id="loadPct">0%</span>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <header>
-    <h2 id="title">STANDOFF GOLD TAP</h2>
-    <button id="langBtn">EN</button>
-  </header>
+<header>
+  <div>STANDOFF GOLD TAP</div>
+  <button class="lang-btn" id="langBtn">EN</button>
+</header>
 
-  <div id="circleWrap">
-    <div id="circle">GOLD</div>
-    <div id="goldCount">0 GOLD</div>
-    <div id="energy">⚡ 6500 | +1 / 3 sec</div>
-  </div>
+<main>
 
-  <div id="boosts">
-    <h3 id="boostTitle">BOOSTS</h3>
-    <div class="boost" data-boost="energy">⚡ Energy +1000 <span>500</span></div>
-    <div class="boost" data-boost="x2">⚡ Tap x2 <span>2000</span></div>
-    <div class="boost" data-boost="auto">🤖 Auto Tap <span>3000</span></div>
-  </div>
-</div>
+<section id="earn" class="active">
+  <div id="circle">GOLD</div>
+  <div id="goldCount">0 GOLD</div>
+  <div id="energy">⚡ 6500 | +1 / 3 sec</div>
+  <div class="progress"><div></div></div>
+</section>
+
+<section id="boosts">
+  <div class="card" onclick="buyBoost('energy',500)">⚡ Energy +1000 <b>500</b></div>
+  <div class="card" onclick="buyBoost('x2',2000)">⚡ Tap x2 <b>2000</b></div>
+  <div class="card" onclick="buyBoost('auto',3000)">🤖 Auto Tap <b>3000</b></div>
+</section>
+
+<section id="airdrop">
+  <h2>AirDrop</h2>
+  <p>01.02.2026</p>
+  <p>10 000 GOLD = 1000 GAME CURRENCY</p>
+</section>
+
+</main>
 
 <nav>
-  <button class="active">Earn</button>
-  <button>Boosts</button>
-  <button>AirDrop</button>
+  <button onclick="setTab('earn')" class="active">Earn</button>
+  <button onclick="setTab('boosts')">Boosts</button>
+  <button onclick="setTab('airdrop')">AirDrop</button>
 </nav>
 
 <script>
-/* ================= LOADER ================= */
-let p = 0;
-const percent = document.getElementById('loadPercent');
-const loader = document.getElementById('loader');
-const app = document.getElementById('app');
+let gold = Number(localStorage.getItem('gold')) || 0;
+let tapsToday = JSON.parse(localStorage.getItem('tapsToday')||'{}');
+let boosts = JSON.parse(localStorage.getItem('boosts')||'{}');
+let tapPower = boosts.x2 ? 2 : 1;
 
-const loadInt = setInterval(() => {
-  p += Math.random() * 12;
-  if (p >= 100) {
-    p = 100;
-    clearInterval(loadInt);
-    loader.style.display = 'none';
-    app.style.display = 'flex';
-  }
-  percent.textContent = Math.floor(p) + '%';
-}, 120);
+function today(){return new Date().toISOString().slice(0,10)}
 
-/* ================= GAME ================= */
-let gold = 0;
-let tapPower = 1;
-let autoTap = false;
-
-const goldEl = document.getElementById('goldCount');
-const circle = document.getElementById('circle');
-
-circle.addEventListener('click', () => {
-  gold += tapPower;
-  goldEl.textContent = gold + ' GOLD';
-});
-
-/* auto tap */
-setInterval(() => {
-  if (autoTap) {
-    gold += tapPower;
-    goldEl.textContent = gold + ' GOLD';
-  }
-}, 1000);
-
-/* boosts */
-document.querySelectorAll('.boost').forEach(b => {
-  b.addEventListener('click', () => {
-    const type = b.dataset.boost;
-    if (type === 'x2') tapPower = 2;
-    if (type === 'auto') autoTap = true;
-  });
-});
-
-/* liquid pointer */
-document.querySelectorAll('.boost, nav button, #circle').forEach(el => {
-  el.addEventListener('pointermove', e => {
-    const r = el.getBoundingClientRect();
-    el.style.setProperty('--x', `${e.clientX - r.left}px`);
-    el.style.setProperty('--y', `${e.clientY - r.top}px`);
-  });
-});
-
-/* ================= LANG ================= */
-let lang = 'EN';
-const dict = {
-  EN: {
-    boosts: 'BOOSTS',
-    energy: '⚡ 6500 | +1 / 3 sec'
-  },
-  RU: {
-    boosts: 'БУСТЫ',
-    energy: '⚡ 6500 | +1 / 3 сек'
-  }
+document.getElementById('circle').onclick=()=>{
+  if((tapsToday[today()]||0)>=1000) return;
+  tapsToday[today()] = (tapsToday[today()]||0)+1;
+  gold+=tapPower;
+  save();
 };
 
-document.getElementById('langBtn').onclick = () => {
-  lang = lang === 'EN' ? 'RU' : 'EN';
-  document.getElementById('langBtn').textContent = lang;
-  document.getElementById('boostTitle').textContent = dict[lang].boosts;
-  document.getElementById('energy').textContent = dict[lang].energy;
-};
+function buyBoost(type,cost){
+  if(gold<cost) return alert('Not enough GOLD');
+  gold-=cost;
+  boosts[type]=true;
+  if(type==='x2') tapPower=2;
+  save();
+}
+
+function save(){
+  localStorage.setItem('gold',gold);
+  localStorage.setItem('tapsToday',JSON.stringify(tapsToday));
+  localStorage.setItem('boosts',JSON.stringify(boosts));
+  update();
+}
+
+function update(){
+  document.getElementById('goldCount').innerText = gold+' GOLD';
+}
+update();
+
+setInterval(()=>{
+  gold+=1;
+  save();
+},3000);
+
+function setTab(tab){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+let pct=0;
+const loader=setInterval(()=>{
+  pct+=10;
+  document.getElementById('loadPct').innerText=pct+'%';
+  if(pct>=100){
+    clearInterval(loader);
+    document.getElementById('loader').style.display='none';
+  }
+},120);
 </script>
 
 </body>
