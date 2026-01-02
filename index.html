@@ -2,52 +2,49 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>STAND MINES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stand Mines</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  <!-- Loader -->
-  <div id="loader">
-    <div class="loader-title">Добро пожаловать</div>
-    <div id="loaderPercent">0%</div>
-  </div>
 
-  <!-- App -->
-  <div id="app" class="hidden">
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-text">Добро пожаловать</div>
+  <div id="loaderPercent">0%</div>
+</div>
 
-    <header>
-      <h1>STAND MINES</h1>
-      <div class="lang">
-        <button id="ru" class="lang-btn active">RU</button>
-        <button id="en" class="lang-btn">EN</button>
-      </div>
-    </header>
+<!-- APP -->
+<div id="app" class="hidden">
 
+  <header>
+    <h1>STAND MINES</h1>
+    <div class="lang">
+      <button id="ru" class="active">RU</button>
+      <button id="en">EN</button>
+    </div>
     <div class="stats">
       <div id="gold">0 GOLD</div>
       <div id="tries">Попытки: 10</div>
     </div>
+  </header>
 
-    <!-- Mines grid -->
+  <!-- GAME GRID -->
+  <div id="game">
     <div id="grid"></div>
-
-    <!-- Pages -->
-    <section id="boosts" class="page hidden"></section>
-    <section id="airdrop" class="page hidden"></section>
-
-    <!-- Bottom nav -->
-    <nav>
-      <button class="nav-btn active" data-page="earn">⭐ Earn</button>
-      <button class="nav-btn" data-page="boosts">⚡ Boosts</button>
-      <button class="nav-btn" data-page="airdrop">🎁 Drop</button>
-    </nav>
-
   </div>
 
-  <script src="i18n.js"></script>
-  <script src="mines.js"></script>
-  <script src="app.js"></script>
+  <!-- BOTTOM NAV -->
+  <nav>
+    <button data-page="earn" class="active">⭐ Earn</button>
+    <button data-page="boosts">⚡ Boosts</button>
+    <button data-page="drop">🎁 Drop</button>
+  </nav>
+
+</div>
+
+<script src="i18n.js"></script>
+<script src="mines.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
