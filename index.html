@@ -1,64 +1,55 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STAND MINE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>STAND MINES</title>
 
-  <!-- STYLES -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="animations.css">
 </head>
 
 <body>
 
-  <!-- BACKGROUND OVERLAY -->
-  <div class="bg-overlay"></div>
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-title">Добро пожаловать</div>
+  <div id="loader-percent">0%</div>
+</div>
 
-  <!-- APP -->
-  <div class="app">
+<!-- APP -->
+<div id="app" class="hidden">
 
-    <!-- HUD -->
-    <header class="hud">
-      <div class="logo">STAND&nbsp;MINE</div>
+  <!-- HUD -->
+  <header class="hud">
+    <div class="logo">STAND MINES</div>
 
-      <div class="lang">
-        <button class="lang-btn active" data-lang="ru">RU</button>
-        <button class="lang-btn" data-lang="en">EN</button>
-      </div>
-    </header>
+    <div class="stats">
+      <div id="gold">0 GOLD</div>
+      <div id="tries">Attempts: 10</div>
+    </div>
 
-    <!-- MAIN -->
-    <main class="main">
+    <div class="lang-switch">
+      <button class="lang active" data-lang="ru">RU</button>
+      <button class="lang" data-lang="en">EN</button>
+    </div>
+  </header>
 
-      <!-- PLAY SCREEN -->
-      <section id="screen-play" class="screen active">
-        <button id="playBtn" class="play-btn">▶ PLAY</button>
-      </section>
+  <!-- GAME GRID -->
+  <main class="grid" id="grid"></main>
 
-      <!-- MINES SCREEN -->
-      <section id="screen-mines" class="screen">
-        <div class="stats">
-          <div><span id="gold">0</span> GOLD</div>
-          <div><span id="attempts">10</span> tries</div>
-        </div>
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="tab active" data-tab="earn">⭐ Earn</button>
+    <button class="tab" data-tab="boosts">⚡ Boosts</button>
+    <button class="tab" data-tab="drop">🎁 Drop</button>
+  </nav>
 
-        <div id="grid" class="grid"></div>
-      </section>
+</div>
 
-    </main>
+<script src="i18n.js"></script>
+<script src="mines.js"></script>
+<script src="app.js"></script>
 
-    <!-- BOTTOM NAV -->
-    <nav class="tabs">
-      <button class="tab active" data-tab="earn">EARN</button>
-      <button class="tab" data-tab="boosts">BOOSTS</button>
-      <button class="tab" data-tab="drop">DROP</button>
-    </nav>
-
-  </div>
-
-  <!-- SCRIPTS -->
-  <script src="app.js"></script>
-  <script src="mines.js"></script>
 </body>
 </html>
