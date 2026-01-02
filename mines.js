@@ -1,40 +1,52 @@
-const grid = document.getElementById("grid");
 let gold = 0;
-let tries = 10;
-let mines = [];
+let attempts = 10;
+let mines = new Set();
+let opened = new Set();
 
-function initGame() {
+const grid = document.getElementById("grid");
+const goldEl = document.getElementById("gold");
+const attemptsEl = document.getElementById("attempts");
+
+function startGame() {
   grid.innerHTML = "";
-  mines = Array(25).fill("star");
-  for (let i = 0; i < 5; i++) mines[Math.floor(Math.random()*25)] = "mine";
+  mines.clear();
+  opened.clear();
+  attempts = 10;
+  attemptsEl.textContent = attempts;
+  goldEl.textContent = gold;
 
-  mines.forEach((type, i) => {
-    const c = document.createElement("div");
-    c.className = "cell";
-    c.onclick = () => openCell(c, type);
-    grid.appendChild(c);
-  });
-}
-
-function openCell(cell, type) {
-  if (tries <= 0 || cell.classList.contains("star")) return;
-
-  tries--;
-  document.getElementById("tries").innerText = `${tries}`;
-
-  if (type === "mine") {
-    cell.classList.add("mine");
-    cell.innerText = "💣";
-    gold = 0;
-  } else {
-    cell.classList.add("star");
-    cell.innerText = "⭐";
-    gold += 10;
+  while (mines.size < 5) {
+    mines.add(Math.floor(Math.random() * 25));
   }
-  document.getElementById("gold").innerText = `${gold} GOLD`;
-}
-function initGame() {
-  // ...
+
+  for (let i = 0; i < 25; i++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.index = i;
+    cell.onclick = () => openCell(cell, i);
+    grid.appendChild(cell);
+  }
 }
 
-window.initGame = initGame;
+function openCell(cell, index) {
+  if (attempts <= 0 || opened.has(index)) return;
+
+  opened.add(index);
+  attempts--;
+  attemptsEl.textContent = attempts;
+
+  if (mines.has(index)) {
+    cell.textContent = "💣";
+    cell.classList.add("mine");
+    attempts = 0;
+    attemptsEl.textContent = 0;
+    return;
+  }
+
+  cell.textContent = "⭐";
+  cell.classList.add("star");
+  gold += 10;
+  goldEl.textContent = gold;
+}
+
+window.startGame = startGame;
