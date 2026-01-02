@@ -1,28 +1,52 @@
-document.addEventListener("DOMContentLoaded", () => {
+const grid = document.getElementById("grid");
 
-  let percent = 0;
-  const loader = document.getElementById("loader");
-  const app = document.getElementById("app");
-  const percentEl = document.getElementById("loaderPercent");
+let tries = 10;
+let gold = 0;
+let mines = [];
 
-  const interval = setInterval(() => {
-    percent += 5;
-    percentEl.textContent = percent + "%";
+function initGame() {
+  grid.innerHTML = "";
+  mines = [];
 
-    if (percent >= 100) {
-      clearInterval(interval);
+  // 5 мин
+  while (mines.length < 5) {
+    const r = Math.floor(Math.random() * 25);
+    if (!mines.includes(r)) mines.push(r);
+  }
 
-      // ВСЕГДА сначала скрываем loader
-      loader.style.display = "none";
-      app.classList.remove("hidden");
+  for (let i = 0; i < 25; i++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
 
-      // Запуск игры ТОЛЬКО если функция существует
-      if (typeof initGame === "function") {
-        initGame();
-      } else {
-        console.error("initGame not found");
-      }
-    }
-  }, 80);
+    cell.onclick = () => clickCell(cell, i);
+    grid.appendChild(cell);
+  }
+}
 
-});
+function clickCell(cell, index) {
+  if (cell.classList.contains("open")) return;
+
+  if (mines.includes(index)) {
+    cell.textContent = "💣";
+    alert("Boom! Всё обнулено");
+    gold = 0;
+    tries = 10;
+    updateStats();
+    initGame();
+    return;
+  }
+
+  cell.textContent = "⭐";
+  cell.classList.add("open");
+  gold += 10;
+  tries--;
+
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById("gold").textContent = gold + " GOLD";
+  document.getElementById("tries").textContent = "Попытки: " + tries;
+}
+
+window.initGame = initGame;
