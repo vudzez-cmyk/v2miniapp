@@ -1,54 +1,85 @@
+// ===== GAME STATE =====
+let gold = 0;
+let attempts = 10;
+let gridSize = 25;
+let minesCount = 5;
+let mines = [];
+let opened = [];
+
+// ===== DOM =====
 const grid = document.getElementById("grid");
 const goldEl = document.getElementById("gold");
-const triesEl = document.getElementById("tries");
+const attemptsEl = document.getElementById("attempts");
 
-let gold = 0;
-let tries = 10;
-let mines = new Set();
+// ===== INIT =====
+initGame();
 
-/* INIT */
 function initGame() {
   grid.innerHTML = "";
-  mines.clear();
+  mines = [];
+  opened = [];
+  attempts = 10;
+  goldEl.textContent = gold;
+  attemptsEl.textContent = attempts;
 
-  // 5 mines
-  while (mines.size < 5) {
-    mines.add(Math.floor(Math.random() * 25));
+  generateMines();
+  generateGrid();
+}
+
+// ===== MINES =====
+function generateMines() {
+  while (mines.length < minesCount) {
+    const r = Math.floor(Math.random() * gridSize);
+    if (!mines.includes(r)) mines.push(r);
   }
+}
 
-  for (let i = 0; i < 25; i++) {
+// ===== GRID =====
+function generateGrid() {
+  for (let i = 0; i < gridSize; i++) {
     const cell = document.createElement("div");
     cell.className = "cell";
     cell.dataset.index = i;
-    cell.addEventListener("click", () => openCell(cell));
+    cell.addEventListener("click", onCellClick);
     grid.appendChild(cell);
   }
 }
 
-function openCell(cell) {
-  if (cell.classList.contains("open") || tries <= 0) return;
-
+// ===== CLICK =====
+function onCellClick(e) {
+  const cell = e.currentTarget;
   const index = Number(cell.dataset.index);
-  cell.classList.add("open");
-  tries--;
 
-  if (mines.has(index)) {
-    cell.textContent = "💣";
+  if (attempts <= 0) return;
+  if (opened.includes(index)) return;
+
+  opened.push(index);
+  attempts--;
+  attemptsEl.textContent = attempts;
+
+  if (mines.includes(index)) {
     cell.classList.add("mine");
-    gold = 0;
-    tries = 0;
-  } else {
-    cell.textContent = "⭐️";
-    cell.classList.add("star");
-    gold += 10;
+    cell.textContent = "💣";
+    attempts = 0;
+    attemptsEl.textContent = 0;
+    revealAllMines();
+    return;
   }
 
-  updateStats();
+  // STAR
+  gold += 10;
+  goldEl.textContent = gold;
+  cell.classList.add("star");
+  cell.textContent = "⭐️";
 }
 
-function updateStats() {
-  goldEl.textContent = `${gold} GOLD`;
-  triesEl.textContent = `Попытки: ${tries}`;
+// ===== REVEAL =====
+function revealAllMines() {
+  document.querySelectorAll(".cell").forEach((cell) => {
+    const idx = Number(cell.dataset.index);
+    if (mines.includes(idx)) {
+      cell.classList.add("mine");
+      cell.textContent = "💣";
+    }
+  });
 }
-
-initGame();
