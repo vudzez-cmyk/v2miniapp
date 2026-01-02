@@ -33,3 +33,8 @@ function openCell(cell, type) {
   }
   document.getElementById("gold").innerText = `${gold} GOLD`;
 }
+function initGame() {
+  // ...
+}
+
+window.initGame = initGame;
