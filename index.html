@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>MINES GOLD</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-box">
+    <div class="loader-title" id="loaderTitle">Добро пожаловать</div>
+    <div class="loader-percent"><span id="loaderPercent">0</span>%</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+  <!-- TOP BAR -->
+  <header class="top">
+    <div class="title">MINES GOLD</div>
+    <div class="lang-switch">
+      <button id="ruBtn" class="lang active">RU</button>
+      <button id="enBtn" class="lang">EN</button>
+    </div>
+  </header>
+
+  <!-- EARN PAGE -->
+  <section id="page-earn" class="page active">
+    <div class="stats">
+      <div id="goldCount">0 GOLD</div>
+      <div id="attempts">Попытки: 10</div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="game-info" id="gameInfo"></div>
+  </section>
+
+  <!-- BOOSTS PAGE -->
+  <section id="page-boosts" class="page">
+    <h2>BOOSTS</h2>
+
+    <div class="boost" data-boost="shield">
+      🛡 Проходимость (1 ошибка)
+      <span>5000 GOLD</span>
+    </div>
+
+    <div class="boost" data-boost="extra">
+      ➕ +5 попыток
+      <span>3000 GOLD</span>
+    </div>
+
+    <div class="boost" data-boost="auto">
+      🤖 Auto Pick (95%)
+      <span>7000 GOLD</span>
+    </div>
+  </section>
+
+  <!-- AIRDROP PAGE -->
+  <section id="page-airdrop" class="page">
+    <h2>AIRDROP</h2>
+    <p>📅 01.02.2026</p>
+    <p>💰 10 000 GOLD = 1 000 GAME TOKENS</p>
+    <p>🎁 Награды всем активным игрокам</p>
+  </section>
+
+  <!-- BOTTOM MENU -->
+  <nav class="bottom">
+    <button data-page="earn" class="active">Earn</button>
+    <button data-page="boosts">Boosts</button>
+    <button data-page="airdrop">AirDrop</button>
+  </nav>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
