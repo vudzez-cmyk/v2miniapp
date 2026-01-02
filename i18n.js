@@ -1,13 +1,20 @@
 const dict = {
   ru: {
-    attempts: "Попытки",
+    tries: "Попытки",
+    boosts: "Бусты",
+    airdrop: "Аирдроп"
   },
   en: {
-    attempts: "Attempts",
+    tries: "Attempts",
+    boosts: "Boosts",
+    airdrop: "Airdrop"
   }
 };
 
-function setLang(lang) {
-  document.getElementById("ruBtn").classList.toggle("active", lang === "ru");
-  document.getElementById("enBtn").classList.toggle("active", lang === "en");
+let lang = "ru";
+
+function setLang(l) {
+  lang = l;
+  document.getElementById("tries").innerText =
+    `${dict[l].tries}: ${tries}`;
 }
