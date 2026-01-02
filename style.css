@@ -1,14 +1,11 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system; }
-
 body {
+  margin: 0;
+  font-family: "Inter", system-ui;
   background: url("bg.jpg") center/cover no-repeat fixed;
   color: #fff;
-  min-height: 100vh;
 }
 
-.hidden { display: none; }
-
-/* Loader */
+/* loader */
 #loader {
   position: fixed;
   inset: 0;
@@ -17,100 +14,39 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
-  z-index: 999;
 }
 
-/* Header */
-header {
+/* app */
+.hidden { display: none; }
+
+#game {
   display: flex;
-  justify-content: space-between;
-  padding: 16px;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-.lang-btn {
-  padding: 6px 12px;
-  border-radius: 12px;
-  border: 1px solid gold;
-  background: transparent;
-  color: gold;
-}
-.lang-btn.active {
-  background: gold;
-  color: #000;
-  box-shadow: 0 0 12px gold;
-}
-
-/* Stats */
-.stats {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-/* Grid */
 #grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  padding: 20px;
+  gap: 12px;
+  width: 90%;
+  max-width: 340px;
 }
 
 .cell {
   aspect-ratio: 1;
   border-radius: 14px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 26px;
   cursor: pointer;
-  position: relative;
+  transition: 0.2s;
 }
 
-.cell.star {
-  background: linear-gradient(135deg, gold, #ffb300);
-  animation: glow 1.2s infinite alternate;
-}
-
-.cell.mine {
-  background: #900;
-  animation: pulse 0.6s infinite;
-}
-
-@keyframes glow {
-  from { box-shadow: 0 0 10px gold; }
-  to { box-shadow: 0 0 30px gold; }
-}
-
-@keyframes pulse {
-  50% { transform: scale(1.05); }
-}
-
-/* Pages */
-.page {
-  padding: 20px;
-}
-
-/* Bottom nav */
-nav {
-  position: fixed;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 12px;
-}
-
-.nav-btn {
-  padding: 12px 20px;
-  border-radius: 20px;
-  border: none;
-  background: rgba(255,255,255,0.1);
-  color: gold;
-  backdrop-filter: blur(10px);
-}
-.nav-btn.active {
-  background: gold;
-  color: #000;
-  box-shadow: 0 0 16px gold;
+.cell:hover {
+  box-shadow: 0 0 15px rgba(255,215,0,0.6);
 }
