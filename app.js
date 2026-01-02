@@ -1,52 +1,54 @@
 const grid = document.getElementById("grid");
+const goldEl = document.getElementById("gold");
+const triesEl = document.getElementById("tries");
 
-let tries = 10;
 let gold = 0;
-let mines = [];
+let tries = 10;
+let mines = new Set();
 
+/* INIT */
 function initGame() {
   grid.innerHTML = "";
-  mines = [];
+  mines.clear();
 
-  // 5 мин
-  while (mines.length < 5) {
-    const r = Math.floor(Math.random() * 25);
-    if (!mines.includes(r)) mines.push(r);
+  // 5 mines
+  while (mines.size < 5) {
+    mines.add(Math.floor(Math.random() * 25));
   }
 
   for (let i = 0; i < 25; i++) {
     const cell = document.createElement("div");
     cell.className = "cell";
-
-    cell.onclick = () => clickCell(cell, i);
+    cell.dataset.index = i;
+    cell.addEventListener("click", () => openCell(cell));
     grid.appendChild(cell);
   }
 }
 
-function clickCell(cell, index) {
-  if (cell.classList.contains("open")) return;
+function openCell(cell) {
+  if (cell.classList.contains("open") || tries <= 0) return;
 
-  if (mines.includes(index)) {
-    cell.textContent = "💣";
-    alert("Boom! Всё обнулено");
-    gold = 0;
-    tries = 10;
-    updateStats();
-    initGame();
-    return;
-  }
-
-  cell.textContent = "⭐";
+  const index = Number(cell.dataset.index);
   cell.classList.add("open");
-  gold += 10;
   tries--;
+
+  if (mines.has(index)) {
+    cell.textContent = "💣";
+    cell.classList.add("mine");
+    gold = 0;
+    tries = 0;
+  } else {
+    cell.textContent = "⭐️";
+    cell.classList.add("star");
+    gold += 10;
+  }
 
   updateStats();
 }
 
 function updateStats() {
-  document.getElementById("gold").textContent = gold + " GOLD";
-  document.getElementById("tries").textContent = "Попытки: " + tries;
+  goldEl.textContent = `${gold} GOLD`;
+  triesEl.textContent = `Попытки: ${tries}`;
 }
 
-window.initGame = initGame;
+initGame();
