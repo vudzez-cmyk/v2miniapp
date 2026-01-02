@@ -1,24 +1,15 @@
-const playBtn = document.getElementById("playBtn");
-const screenPlay = document.getElementById("screen-play");
-const screenMines = document.getElementById("screen-mines");
+let percent = 0;
+const loader = document.getElementById("loader");
+const app = document.getElementById("app");
+const text = document.getElementById("loader-percent");
 
-playBtn.onclick = () => {
-  screenPlay.classList.remove("active");
-  screenMines.classList.add("active");
-};
+const timer = setInterval(() => {
+  percent++;
+  text.innerText = percent + "%";
 
-// Tabs
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.onclick = () => {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
-  };
-});
-
-// Lang
-document.querySelectorAll(".lang-btn").forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-  };
-});
+  if (percent >= 100) {
+    clearInterval(timer);
+    loader.classList.add("hidden");
+    app.classList.remove("hidden");
+  }
+}, 20);
