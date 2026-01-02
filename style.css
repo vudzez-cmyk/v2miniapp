@@ -1,52 +1,138 @@
-body {
+/* RESET */
+* {
   margin: 0;
-  font-family: "Inter", system-ui;
-  background: url("bg.jpg") center/cover no-repeat fixed;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  background: black;
+}
+
+/* BACKGROUND */
+.bg {
+  position: fixed;
+  inset: 0;
+  background: url("background.jpg") center / cover no-repeat;
+  filter: brightness(0.6);
+  z-index: -1;
+}
+
+/* APP */
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   color: #fff;
 }
 
-/* loader */
-#loader {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+/* HEADER */
+.header {
+  padding: 16px;
+  text-align: center;
 }
 
-/* app */
-.hidden { display: none; }
-
-#game {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
+.header h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
 }
 
-#grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  width: 90%;
-  max-width: 340px;
+.lang {
+  position: absolute;
+  top: 16px;
+  right: 16px;
 }
 
-.cell {
-  aspect-ratio: 1;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,255,255,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
+.lang-btn {
+  border: 1px solid gold;
+  background: transparent;
+  color: gold;
+  padding: 6px 12px;
+  border-radius: 12px;
+  margin-left: 6px;
   cursor: pointer;
-  transition: 0.2s;
+}
+
+.lang-btn.active {
+  background: gold;
+  color: black;
+  box-shadow: 0 0 15px gold;
+}
+
+.stats {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+/* GAME */
+.game {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 64px);
+  grid-template-rows: repeat(5, 64px);
+  gap: 10px;
+}
+
+/* CELLS */
+.cell {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  cursor: pointer;
+  transition: 0.25s;
 }
 
 .cell:hover {
-  box-shadow: 0 0 15px rgba(255,215,0,0.6);
+  box-shadow: 0 0 12px rgba(255,215,0,0.6);
+}
+
+.cell.open.star {
+  background: rgba(255,215,0,0.25);
+  box-shadow: 0 0 20px gold;
+}
+
+.cell.open.mine {
+  background: rgba(255,0,0,0.4);
+  box-shadow: 0 0 25px red;
+}
+
+/* NAV */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+}
+
+.nav-btn {
+  flex: 1;
+  margin: 0 6px;
+  padding: 12px;
+  border-radius: 18px;
+  border: none;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 16px;
+}
+
+.nav-btn.active {
+  background: gold;
+  color: black;
+  box-shadow: 0 0 20px gold;
 }
