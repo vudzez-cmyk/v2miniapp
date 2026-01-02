@@ -135,4 +135,60 @@ body {
   background: gold;
   color: black;
   box-shadow: 0 0 20px gold;
+}/* SCREENS */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+.screen.active {
+  display: flex;
+}
+
+/* STATS LINE */
+.stats-line {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  max-width: 360px;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 64px);
+  grid-template-rows: repeat(5, 64px);
+  gap: 12px;
+}
+
+/* CELLS */
+.cell {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cell:active {
+  transform: scale(0.95);
+}
+
+.cell.star {
+  background: rgba(255,215,0,0.35);
+  box-shadow: 0 0 22px gold;
+}
+
+.cell.mine {
+  background: rgba(255,0,0,0.45);
+  box-shadow: 0 0 24px red;
 }
