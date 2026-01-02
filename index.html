@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>STAND MINES</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="animations.css">
+</head>
+<body>
+  <div id="bg"></div>
+  <div id="overlay"></div>
+
+  <!-- Loader -->
+  <div id="loader" class="screen">
+    <div class="loader-inner">
+      <div class="logo">Welcome</div>
+      <div class="progress"><div id="progressBar" class="bar"></div></div>
+      <div id="progressText" class="progress-text">0%</div>
+    </div>
+  </div>
+
+  <div id="app" class="screen hidden">
+    <header class="hud">
+      <div class="title">STAND MINES</div>
+      <div class="lang-switch">
+        <button class="lang-btn active" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section id="tab-earn" class="tab-section">
+        <div class="status-row">
+          <div class="stat">
+            <div class="label" data-i18n="daily_attempts">Попытки</div>
+            <div id="attempts" class="value">10</div>
+            <div id="resetTimer" class="timer hidden"></div>
+          </div>
+          <div class="stat">
+            <div class="label" data-i18n="round_gold">Раунд GOLD</div>
+            <div id="roundGold" class="value">0</div>
+          </div>
+          <div class="stat">
+            <div class="label" data-i18n="total_gold">Всего GOLD</div>
+            <div id="totalGold" class="value">0</div>
+          </div>
+        </div>
+
+        <div class="board-wrap">
+          <div id="board" class="board"></div>
+        </div>
+
+        <div class="controls">
+          <button id="startRound" class="btn primary" data-i18n="start_round">Начать</button>
+          <button id="collectRound" class="btn" data-i18n="collect_round">Забрать</button>
+
+          <!-- Auto Pick -->
+          <div id="autoPickWrap" class="auto-pick hidden">
+            <button id="autoPickBtn" class="btn auto-pick-btn">AUTO PICK</button>
+            <div class="auto-pick-ring"><span>95%</span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="mines.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
