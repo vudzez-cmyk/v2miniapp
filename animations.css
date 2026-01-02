@@ -1,0 +1,42 @@
+/* animations.css
+   Reusable keyframes and animation utilities
+*/
+
+/* cell open animation (scale + glow) */
+@keyframes cellOpen {
+  0% { transform: scale(0.92); filter: blur(0px); box-shadow: none; }
+  60% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+/* subtle floating for gold elements */
+@keyframes floaty {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+/* fade-in/out common */
+@keyframes fadeIn {
+  from { opacity:0; transform: translateY(6px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+@keyframes glowPulse {
+  0% { box-shadow:0 6px 22px rgba(212,169,59,0.12) }
+  50% { box-shadow:0 12px 44px rgba(212,169,59,0.22) }
+  100% { box-shadow:0 6px 22px rgba(212,169,59,0.12) }
+}
+
+/* apply to elements via classes */
+.animated-open { animation: cellOpen 360ms cubic-bezier(.2,.9,.2,1) both; }
+.glow-pulse { animation: glowPulse 2s infinite; }
+
+/* small entrance for screens */
+.screen .loader-inner, .main-content, .bottom-nav { animation: fadeIn 420ms ease both; }
+
+/* language active glow */
+.lang-btn.active { animation: glowPulse 2.2s infinite; }
+
+/* hover states */
+.nav-btn:hover, .btn:hover { transform:translateY(-3px); transition:transform 180ms ease; }
