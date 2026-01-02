@@ -1,28 +1,26 @@
-// LOADER
 let percent = 0;
 const loader = document.getElementById("loader");
-const loaderPercent = document.getElementById("loaderPercent");
+const app = document.getElementById("app");
 
-const interval = setInterval(() => {
-  percent += 4;
-  loaderPercent.textContent = percent + "%";
+const int = setInterval(() => {
+  percent += 5;
+  document.getElementById("loaderPercent").innerText = percent + "%";
   if (percent >= 100) {
-    clearInterval(interval);
-    loader.style.display = "none";
+    clearInterval(int);
+    loader.classList.add("hidden");
+    app.classList.remove("hidden");
+    initGame();
   }
-}, 60);
+}, 80);
 
-// NAV
-document.querySelectorAll(".nav-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-
-    btn.classList.add("active");
-    document.getElementById(btn.dataset.screen).classList.add("active");
-  });
+// nav
+document.querySelectorAll(".nav-btn").forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+  };
 });
 
-// LANG
-document.getElementById("ruBtn").onclick = () => setLang("ru");
-document.getElementById("enBtn").onclick = () => setLang("en");
+// lang
+document.getElementById("ru").onclick = () => setLang("ru");
+document.getElementById("en").onclick = () => setLang("en");
