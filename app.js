@@ -262,3 +262,25 @@
   // Start
   document.addEventListener('DOMContentLoaded', init);
 })();
+function updateAttemptsUI(){
+  const attempts = Mines.getState().attemptsLeft;
+  attemptsEl.textContent = attempts;
+
+  if(attempts <= 0){
+    startBtn.disabled = true;
+    startBtn.textContent = getResetTimerText();
+  } else {
+    startBtn.disabled = false;
+    startBtn.textContent = I18N.t('start_round');
+  }
+}
+
+function getResetTimerText(){
+  const now = new Date();
+  const reset = new Date();
+  reset.setUTCHours(24,0,0,0);
+  const diff = reset - now;
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  return `⏳ ${h}h ${m}m`;
+}
