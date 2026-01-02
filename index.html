@@ -3,48 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stand Mines</title>
+  <title>STAND MINES</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<!-- LOADER -->
-<div id="loader">
-  <div class="loader-text">Добро пожаловать</div>
-  <div id="loaderPercent">0%</div>
-</div>
+  <!-- BACKGROUND -->
+  <div class="bg"></div>
 
-<!-- APP -->
-<div id="app" class="hidden">
+  <!-- APP -->
+  <div class="app">
 
-  <header>
-    <h1>STAND MINES</h1>
-    <div class="lang">
-      <button id="ru" class="active">RU</button>
-      <button id="en">EN</button>
-    </div>
-    <div class="stats">
-      <div id="gold">0 GOLD</div>
-      <div id="tries">Попытки: 10</div>
-    </div>
-  </header>
+    <!-- HEADER -->
+    <header class="header">
+      <h1>STAND MINES</h1>
 
-  <!-- GAME GRID -->
-  <div id="game">
-    <div id="grid"></div>
+      <div class="lang">
+        <button id="ru" class="lang-btn active">RU</button>
+        <button id="en" class="lang-btn">EN</button>
+      </div>
+
+      <div class="stats">
+        <div id="gold">0 GOLD</div>
+        <div id="tries">Попытки: 10</div>
+      </div>
+    </header>
+
+    <!-- MAIN GAME -->
+    <main class="game">
+      <div id="grid" class="grid"></div>
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active">⭐ Earn</button>
+      <button class="nav-btn">⚡ Boosts</button>
+      <button class="nav-btn">🎁 Drop</button>
+    </nav>
+
   </div>
 
-  <!-- BOTTOM NAV -->
-  <nav>
-    <button data-page="earn" class="active">⭐ Earn</button>
-    <button data-page="boosts">⚡ Boosts</button>
-    <button data-page="drop">🎁 Drop</button>
-  </nav>
-
-</div>
-
-<script src="i18n.js"></script>
-<script src="mines.js"></script>
-<script src="app.js"></script>
+  <!-- JS -->
+  <script src="app.js"></script>
 </body>
 </html>
