@@ -16,7 +16,7 @@ body {
 .bg {
   position: fixed;
   inset: 0;
-  background: url("background.jpg") center / cover no-repeat;
+  background: url("bg.jpg") center / cover no-repeat;
   filter: brightness(0.6);
   z-index: -1;
 }
