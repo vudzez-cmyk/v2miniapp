@@ -1,10 +1,12 @@
 // mines.js
-// Core mines logic with persistence and daily reset
+// Исправленная логика:
+// - Попытки тратятся ТОЛЬКО при взрыве
+// - После мины поле очищается
+// - Есть блокировка при 0 попыток
 
 const Mines = (function(){
-  const ROWS = 5;
-  const COLS = 5;
-  const CELLS = ROWS * COLS;
+  const SIZE = 25;
+  const MINES_COUNT = 5;
   const SAFE_REWARD = 10;
   const DEFAULT_ATTEMPTS = 10;
   const STORAGE_KEY = 'stand_mines_state';
@@ -14,72 +16,61 @@ const Mines = (function(){
   let totalGold = 0;
   let roundGold = 0;
   let roundActive = false;
-
-  let boosts = {
-    passChanceActive: false,
-    autoPickActive: false
-  };
-
-  /* ---------- Persistence ---------- */
-  function save(){
-    const data = {
-      attemptsLeft,
-      totalGold,
-      boosts,
-      lastResetDate: getTodayUTC()
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-
-  function load(){
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return;
-    try{
-      const data = JSON.parse(raw);
-      attemptsLeft = data.attemptsLeft ?? DEFAULT_ATTEMPTS;
-      totalGold = data.totalGold ?? 0;
-      boosts = data.boosts ?? boosts;
-    }catch(e){}
-  }
+  let lastReset = getTodayUTC();
 
   function getTodayUTC(){
     const d = new Date();
     return `${d.getUTCFullYear()}-${d.getUTCMonth()+1}-${d.getUTCDate()}`;
   }
 
-  function dailyResetIfNeeded(){
+  /* ---------- Persistence ---------- */
+  function save(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      attemptsLeft,
+      totalGold,
+      lastReset
+    }));
+  }
+
+  function load(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if(!raw) return;
     try{
-      const data = JSON.parse(raw);
-      if(data.lastResetDate !== getTodayUTC()){
-        attemptsLeft = DEFAULT_ATTEMPTS;
-        boosts.passChanceActive = false;
-        boosts.autoPickActive = false;
-        save();
-      }
+      const d = JSON.parse(raw);
+      attemptsLeft = d.attemptsLeft ?? DEFAULT_ATTEMPTS;
+      totalGold = d.totalGold ?? 0;
+      lastReset = d.lastReset ?? getTodayUTC();
     }catch(e){}
   }
 
-  /* ---------- Game Logic ---------- */
-  function shuffleBoard(mines = 5){
-    board = Array.from({length: CELLS}, () => ({ opened:false, isMine:false }));
+  function dailyReset(){
+    const today = getTodayUTC();
+    if(today !== lastReset){
+      attemptsLeft = DEFAULT_ATTEMPTS;
+      lastReset = today;
+      save();
+    }
+  }
+
+  /* ---------- Board ---------- */
+  function generateBoard(){
+    board = Array.from({length: SIZE}, ()=>({ opened:false, mine:false }));
     let placed = 0;
-    while(placed < mines){
-      const i = Math.floor(Math.random() * CELLS);
-      if(!board[i].isMine){
-        board[i].isMine = true;
+    while(placed < MINES_COUNT){
+      const i = Math.floor(Math.random()*SIZE);
+      if(!board[i].mine){
+        board[i].mine = true;
         placed++;
       }
     }
   }
 
   function startRound(){
-    if(attemptsLeft <= 0) return { ok:false };
-    shuffleBoard();
+    dailyReset();
+    if(attemptsLeft <= 0) return { ok:false, locked:true };
     roundGold = 0;
     roundActive = true;
-    save();
+    generateBoard();
     return { ok:true };
   }
 
@@ -88,69 +79,47 @@ const Mines = (function(){
     const cell = board[index];
     if(cell.opened) return { ok:false };
 
-    attemptsLeft--;
     cell.opened = true;
 
-    if(boosts.passChanceActive){
-      boosts.passChanceActive = false;
-      cell.isMine = false;
-      roundGold += SAFE_REWARD;
-      save();
-      return { ok:true, safe:true };
-    }
-
-    if(cell.isMine){
+    if(cell.mine){
+      attemptsLeft--;
       roundGold = 0;
       roundActive = false;
+      generateBoard(); // очищаем поле
       save();
-      return { ok:true, mine:true };
+      return { ok:true, mine:true, attemptsLeft };
     }
 
     roundGold += SAFE_REWARD;
     save();
-    return { ok:true, safe:true };
+    return { ok:true, safe:true, roundGold };
   }
 
-  function collectRound(){
+  function collect(){
     totalGold += roundGold;
     roundGold = 0;
     roundActive = false;
     save();
-    return totalGold;
   }
 
-  function purchaseBoost(key){
-    const prices = { passChance:5000, addAttempts:3000, autoPick:7000 };
-    if(totalGold < prices[key]) return false;
-
-    totalGold -= prices[key];
-    if(key === 'passChance') boosts.passChanceActive = true;
-    if(key === 'addAttempts') attemptsLeft += 5;
-    if(key === 'autoPick') boosts.autoPickActive = true;
-
-    save();
-    return true;
+  function getState(){
+    return {
+      board,
+      attemptsLeft,
+      totalGold,
+      roundGold,
+      roundActive
+    };
   }
 
-  function getBoardCopy(){
-    return board.map((c,i)=>({index:i, opened:c.opened, isMine:c.opened && c.isMine}));
-  }
-
-  function getAttempts(){ return attemptsLeft; }
-  function getTotals(){ return { totalGold, roundGold }; }
-
-  /* ---------- Init ---------- */
   load();
-  dailyResetIfNeeded();
-  shuffleBoard();
+  dailyReset();
+  generateBoard();
 
   return {
     startRound,
     reveal,
-    collectRound,
-    purchaseBoost,
-    getBoardCopy,
-    getAttempts,
-    getTotals
+    collect,
+    getState
   };
 })();
