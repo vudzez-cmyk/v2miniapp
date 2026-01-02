@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>STAND MINE</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- STYLES -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="animations.css">
 </head>
 
 <body>
@@ -19,31 +22,43 @@
     <header class="hud">
       <div class="logo">STAND&nbsp;MINE</div>
 
-      <div class="lang-switch">
-        <button class="lang-btn active">RU</button>
-        <button class="lang-btn">EN</button>
+      <div class="lang">
+        <button class="lang-btn active" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="en">EN</button>
       </div>
     </header>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN -->
     <main class="main">
 
-      <!-- PLAY BUTTON -->
-      <button id="playBtn" class="play-btn">
-        ▶ PLAY
-      </button>
+      <!-- PLAY SCREEN -->
+      <section id="screen-play" class="screen active">
+        <button id="playBtn" class="play-btn">▶ PLAY</button>
+      </section>
+
+      <!-- MINES SCREEN -->
+      <section id="screen-mines" class="screen">
+        <div class="stats">
+          <div><span id="gold">0</span> GOLD</div>
+          <div><span id="attempts">10</span> tries</div>
+        </div>
+
+        <div id="grid" class="grid"></div>
+      </section>
 
     </main>
 
-    <!-- BOTTOM TABS -->
+    <!-- BOTTOM NAV -->
     <nav class="tabs">
-      <button class="tab active">EARN</button>
-      <button class="tab">BOOSTS</button>
-      <button class="tab">DROP</button>
+      <button class="tab active" data-tab="earn">EARN</button>
+      <button class="tab" data-tab="boosts">BOOSTS</button>
+      <button class="tab" data-tab="drop">DROP</button>
     </nav>
 
   </div>
 
+  <!-- SCRIPTS -->
   <script src="app.js"></script>
+  <script src="mines.js"></script>
 </body>
 </html>
