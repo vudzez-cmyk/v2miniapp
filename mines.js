@@ -1,14 +1,5 @@
 // mines.js
-// Core mines logic separated from UI concerns.
-// Exposes a simple API the UI can call.
-//
-// Rules:
-// - Grid 5x5 (25 cells).
-// - Daily attempts: default 10.
-// - Each safe cell gives +10 GOLD.
-// - If player hits a mine -> current round gold resets to 0.
-// - Safe cell reveals a star icon; mine reveals a bomb.
-// - Logic does NOT handle persistence beyond session (can be extended).
+// Core mines logic with persistence and daily reset
 
 const Mines = (function(){
   const ROWS = 5;
@@ -16,151 +7,150 @@ const Mines = (function(){
   const CELLS = ROWS * COLS;
   const SAFE_REWARD = 10;
   const DEFAULT_ATTEMPTS = 10;
+  const STORAGE_KEY = 'stand_mines_state';
 
-  // Game state
-  let board = []; // { isMine, opened }
+  let board = [];
   let attemptsLeft = DEFAULT_ATTEMPTS;
   let totalGold = 0;
   let roundGold = 0;
   let roundActive = false;
 
-  // Boosts state
   let boosts = {
-    passChanceActive: false, // one-time use
+    passChanceActive: false,
     autoPickActive: false
   };
 
-  // Utility: generate board with random mines. For the product, mines count should be set for a fair daily experience.
-  function shuffleBoard(seedMines = 5){
-    board = new Array(CELLS).fill(0).map(() => ({ isMine: false, opened: false }));
-    // Place mines randomly (seedMines mines)
+  /* ---------- Persistence ---------- */
+  function save(){
+    const data = {
+      attemptsLeft,
+      totalGold,
+      boosts,
+      lastResetDate: getTodayUTC()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function load(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    try{
+      const data = JSON.parse(raw);
+      attemptsLeft = data.attemptsLeft ?? DEFAULT_ATTEMPTS;
+      totalGold = data.totalGold ?? 0;
+      boosts = data.boosts ?? boosts;
+    }catch(e){}
+  }
+
+  function getTodayUTC(){
+    const d = new Date();
+    return `${d.getUTCFullYear()}-${d.getUTCMonth()+1}-${d.getUTCDate()}`;
+  }
+
+  function dailyResetIfNeeded(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    try{
+      const data = JSON.parse(raw);
+      if(data.lastResetDate !== getTodayUTC()){
+        attemptsLeft = DEFAULT_ATTEMPTS;
+        boosts.passChanceActive = false;
+        boosts.autoPickActive = false;
+        save();
+      }
+    }catch(e){}
+  }
+
+  /* ---------- Game Logic ---------- */
+  function shuffleBoard(mines = 5){
+    board = Array.from({length: CELLS}, () => ({ opened:false, isMine:false }));
     let placed = 0;
-    while(placed < seedMines){
-      const idx = Math.floor(Math.random() * CELLS);
-      if(!board[idx].isMine){
-        board[idx].isMine = true;
+    while(placed < mines){
+      const i = Math.floor(Math.random() * CELLS);
+      if(!board[i].isMine){
+        board[i].isMine = true;
         placed++;
       }
     }
   }
 
-  // Start a new round: reset round values, ensure attempts left > 0
   function startRound(){
-    if(attemptsLeft <= 0) return { ok:false, reason:'no_attempts' };
+    if(attemptsLeft <= 0) return { ok:false };
     shuffleBoard();
     roundGold = 0;
     roundActive = true;
+    save();
     return { ok:true };
   }
 
-  // Reveal a cell index (0..24)
-  // Returns an object describing result to update UI
-  function reveal(index, opts = {}){
-    if(!roundActive) return { ok:false, reason:'no_round' };
-    if(index < 0 || index >= CELLS) return { ok:false, reason:'bad_index' };
+  function reveal(index){
+    if(!roundActive) return { ok:false };
     const cell = board[index];
-    if(cell.opened) return { ok:false, reason:'already_opened' };
+    if(cell.opened) return { ok:false };
 
-    // Deduct attempt
-    attemptsLeft = Math.max(0, attemptsLeft - 1);
+    attemptsLeft--;
+    cell.opened = true;
 
-    // Check passChance boost (one-time)
     if(boosts.passChanceActive){
-      // 100% pass for next reveal: treat as safe even if mine
       boosts.passChanceActive = false;
-      cell.opened = true;
       cell.isMine = false;
       roundGold += SAFE_REWARD;
-      return { ok:true, safe:true, reward:SAFE_REWARD, attemptsLeft, roundGold, totalGold };
+      save();
+      return { ok:true, safe:true };
     }
 
-    // Auto pick support: if active, decide success based on probability
-    if(opts.autoPick && boosts.autoPickActive){
-      // 95% chance of safe
-      const roll = Math.random();
-      const success = roll < 0.95;
-      if(success){
-        cell.opened = true;
-        cell.isMine = false;
-        roundGold += SAFE_REWARD;
-        return { ok:true, safe:true, reward:SAFE_REWARD, attemptsLeft, roundGold, totalGold };
-      }else{
-        // fail: treat as mine
-        cell.opened = true;
-        cell.isMine = true;
-        const lost = roundGold;
-        roundGold = 0;
-        roundActive = false;
-        return { ok:true, mine:true, lost, attemptsLeft, roundGold, totalGold };
-      }
-    }
-
-    // Normal reveal
-    cell.opened = true;
     if(cell.isMine){
-      // Mine hit: round resets to 0 and round ends
-      const lost = roundGold;
       roundGold = 0;
       roundActive = false;
-      return { ok:true, mine:true, lost, attemptsLeft, roundGold, totalGold };
-    } else {
-      // Safe
-      roundGold += SAFE_REWARD;
-      return { ok:true, safe:true, reward:SAFE_REWARD, attemptsLeft, roundGold, totalGold };
+      save();
+      return { ok:true, mine:true };
     }
+
+    roundGold += SAFE_REWARD;
+    save();
+    return { ok:true, safe:true };
   }
 
-  // Collect current round gold into total
   function collectRound(){
     totalGold += roundGold;
-    const collected = roundGold;
     roundGold = 0;
     roundActive = false;
-    return { collected, totalGold };
+    save();
+    return totalGold;
   }
 
-  // Purchase boost (deduct gold). Returns true/false
-  function purchaseBoost(boostKey){
-    const prices = {
-      passChance: 5000,
-      addAttempts: 3000,
-      autoPick: 7000
-    };
-    const cost = prices[boostKey];
-    if(!cost || totalGold < cost) return { ok:false, reason:'insufficient' };
-    totalGold -= cost;
+  function purchaseBoost(key){
+    const prices = { passChance:5000, addAttempts:3000, autoPick:7000 };
+    if(totalGold < prices[key]) return false;
 
-    if(boostKey === 'passChance'){
-      boosts.passChanceActive = true;
-    } else if(boostKey === 'addAttempts'){
-      attemptsLeft += 5;
-    } else if(boostKey === 'autoPick'){
-      boosts.autoPickActive = true;
-    }
-    return { ok:true, cost, totalGold };
+    totalGold -= prices[key];
+    if(key === 'passChance') boosts.passChanceActive = true;
+    if(key === 'addAttempts') attemptsLeft += 5;
+    if(key === 'autoPick') boosts.autoPickActive = true;
+
+    save();
+    return true;
   }
 
-  // Getters
-  function getBoardCopy(){ return board.map((c,i) => ({ index:i, opened:c.opened, isMine: c.opened ? c.isMine : false })); }
+  function getBoardCopy(){
+    return board.map((c,i)=>({index:i, opened:c.opened, isMine:c.opened && c.isMine}));
+  }
+
   function getAttempts(){ return attemptsLeft; }
   function getTotals(){ return { totalGold, roundGold }; }
-  function addGold(amount){ totalGold += amount; return totalGold; }
 
-  // Reset for testing/development
-  function resetAll(){
-    attemptsLeft = DEFAULT_ATTEMPTS;
-    totalGold = 0;
-    roundGold = 0;
-    roundActive = false;
-    boosts = { passChanceActive:false, autoPickActive:false };
-    shuffleBoard();
-  }
-
-  // Initialize board on load
+  /* ---------- Init ---------- */
+  load();
+  dailyResetIfNeeded();
   shuffleBoard();
 
   return {
-    startRound, reveal, collectRound, purchaseBoost,
-    getBoardCopy, getAttempts, getTotals, addGold, resetAll
+    startRound,
+    reveal,
+    collectRound,
+    purchaseBoost,
+    getBoardCopy,
+    getAttempts,
+    getTotals
   };
 })();
