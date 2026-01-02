@@ -1,85 +1,92 @@
-// ===== GAME STATE =====
-let gold = 0;
-let attempts = 10;
-let gridSize = 25;
-let minesCount = 5;
-let mines = [];
-let opened = [];
+const playBtn = document.getElementById("playBtn");
+const playScreen = document.getElementById("playScreen");
+const minesScreen = document.getElementById("minesScreen");
 
-// ===== DOM =====
 const grid = document.getElementById("grid");
 const goldEl = document.getElementById("gold");
 const attemptsEl = document.getElementById("attempts");
 
-// ===== INIT =====
-initGame();
+let gold = 0;
+let attempts = 10;
+let mines = new Set();
+let opened = new Set();
 
-function initGame() {
+/* PLAY */
+playBtn.addEventListener("click", () => {
+  playScreen.classList.remove("active");
+  minesScreen.classList.add("active");
+  startGame();
+});
+
+/* GAME INIT */
+function startGame() {
   grid.innerHTML = "";
-  mines = [];
-  opened = [];
+  mines.clear();
+  opened.clear();
   attempts = 10;
   goldEl.textContent = gold;
   attemptsEl.textContent = attempts;
 
-  generateMines();
-  generateGrid();
-}
-
-// ===== MINES =====
-function generateMines() {
-  while (mines.length < minesCount) {
-    const r = Math.floor(Math.random() * gridSize);
-    if (!mines.includes(r)) mines.push(r);
+  while (mines.size < 5) {
+    mines.add(Math.floor(Math.random() * 25));
   }
-}
 
-// ===== GRID =====
-function generateGrid() {
-  for (let i = 0; i < gridSize; i++) {
+  for (let i = 0; i < 25; i++) {
     const cell = document.createElement("div");
     cell.className = "cell";
     cell.dataset.index = i;
-    cell.addEventListener("click", onCellClick);
+    cell.addEventListener("click", () => openCell(cell, i));
     grid.appendChild(cell);
   }
 }
 
-// ===== CLICK =====
-function onCellClick(e) {
-  const cell = e.currentTarget;
-  const index = Number(cell.dataset.index);
-
+/* CELL CLICK */
+function openCell(cell, index) {
   if (attempts <= 0) return;
-  if (opened.includes(index)) return;
+  if (opened.has(index)) return;
 
-  opened.push(index);
+  opened.add(index);
   attempts--;
   attemptsEl.textContent = attempts;
 
-  if (mines.includes(index)) {
-    cell.classList.add("mine");
+  if (mines.has(index)) {
     cell.textContent = "💣";
+    cell.classList.add("mine");
     attempts = 0;
     attemptsEl.textContent = 0;
-    revealAllMines();
+    revealMines();
     return;
   }
 
-  // STAR
+  cell.textContent = "⭐️";
+  cell.classList.add("star");
   gold += 10;
   goldEl.textContent = gold;
-  cell.classList.add("star");
-  cell.textContent = "⭐️";
 }
 
-// ===== REVEAL =====
-function revealAllMines() {
-  document.querySelectorAll(".cell").forEach((cell) => {
-    const idx = Number(cell.dataset.index);
-    if (mines.includes(idx)) {
-      cell.classList.add("mine");
-      cell.textContent = "💣";
+/* REVEAL */
+function revealMines() {
+  document.querySelectorAll(".cell").forEach(c => {
+    const i = Number(c.dataset.index);
+    if (mines.has(i)) {
+      c.textContent = "💣";
+      c.classList.add("mine");
     }
   });
 }
+
+/* TABS */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+  });
+});
+
+/* LANG */
+document.querySelectorAll(".lang-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  });
+});
