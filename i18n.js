@@ -1,10 +1,13 @@
-const I18N = {
+const dict = {
   ru: {
-    welcome: "Добро пожаловать",
-    attempts: "Попытки"
+    attempts: "Попытки",
   },
   en: {
-    welcome: "Welcome",
-    attempts: "Attempts"
+    attempts: "Attempts",
   }
 };
+
+function setLang(lang) {
+  document.getElementById("ruBtn").classList.toggle("active", lang === "ru");
+  document.getElementById("enBtn").classList.toggle("active", lang === "en");
+}
